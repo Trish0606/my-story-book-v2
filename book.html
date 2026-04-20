@@ -1,15 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8">
+    <title>Our Story</title>
+    <style>
+        /* Embedded CSS - No external file needed! */
+        body {
+            background: linear-gradient(to bottom, #87CEEB, #ffffff);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        .book {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        button {
+            background: #ffb7c5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
     <div class="book">
-        <h2>Our Story</h2>
-        <p>This is the start of our journey together.</p>
-        <button onclick="alert('Thanks for reading!')">Close</button>
+        <div class="page active" id="page1">
+            <h2>Our Story</h2>
+            <p>Welcome to our book.</p>
+            <button onclick="nextPage('page2')">Next Page</button>
+        </div>
+
+        <div class="page" id="page2">
+            <h2>The Journey</h2>
+            <p>We have come so far together.</p>
+            <button onclick="nextPage('page3')">Next Page</button>
+        </div>
+
+        <div class="page" id="page3">
+            <h2>Thank You</h2>
+            <p>Thank you for everything.</p>
+            <button onclick="window.location.href='index.html'">Back Home</button>
+        </div>
     </div>
 
+    <script>
+        function nextPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Show the selected page
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
 </body>
 </html>
