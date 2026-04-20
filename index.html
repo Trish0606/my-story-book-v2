@@ -1,8 +1,40 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* All your CSS is now right here inside the HTML */
+        body {
+            background: linear-gradient(to bottom, #87CEEB, #ffffff);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        .book {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        button {
+            background: #ffb7c5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
