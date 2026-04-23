@@ -2,37 +2,18 @@
 <html>
 <head>
     <style>
-        /* All your CSS is now right here inside the HTML */
+        /* Embedded CSS - No external file needed! */
         body {
             background: linear-gradient(to bottom, #87CEEB, #ffffff);
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Georgia', serif;
-            overflow: hidden;
+            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Georgia', serif; overflow: hidden;
         }
 
         .book {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 300px;
-            text-align: center;
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 300px; text-align: center; z-index: 10;
         }
 
         button {
-            background: #ffb7c5;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
+            background: #ffb7c5; border: none; padding: 10px 20px; border-radius: 20px; color: white; cursor: pointer; font-weight: bold; margin-top: 15px;
         }
     </style>
 </head>
@@ -40,17 +21,18 @@
 
     <div class="book">
         <h1>Welcome</h1>
-        <p>Enter the code to continue.</p>
+        <p>A story made just for you. Enter the secret code to read.</p>
         <button onclick="checkPassword()">Enter Code</button>
     </div>
 
     <script>
         function checkPassword() {
-            const code = prompt("Enter the code:");
+            // Change '1234' to your secret code
+            const code = prompt("Enter the secret code:");
             if (code === "1234") {
                 window.location.href = "book.html";
             } else {
-                alert("Wrong code!");
+                alert("Incorrect code, try again!");
             }
         }
     </script>
