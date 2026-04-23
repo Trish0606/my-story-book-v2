@@ -1,80 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Our Story</title>
     <style>
-        /* Embedded CSS - No external file needed! */
+        /* ALL-IN-ONE CSS */
         body {
             background: linear-gradient(to bottom, #87CEEB, #ffffff);
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Georgia', serif;
-            overflow: hidden;
+            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Georgia', serif; overflow: hidden; perspective: 2000px;
         }
 
+        /* The main book container */
         .book {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 300px;
-            text-align: center;
+            width: 350px;
+            height: 450px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
             z-index: 10;
         }
 
+        /* Generic page style */
         .page {
-            display: none;
+            width: 100%;
+            height: 100%;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 30px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 1s;
+            transform-origin: left;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
-        .page.active {
-            display: block;
+        /* The logic for flipping the pages */
+        .flipped {
+            transform: rotateY(-180deg);
         }
+
+        /* Page Back Styling (What you see when it's flipped) */
+        .page-back {
+            background: #fdfdfd;
+            transform: rotateY(180deg);
+            display: none; /* Hidden unless it's flipped */
+        }
+        
+        /* The front of the book */
+        #cover {
+            z-index: 3;
+            background: #ffb7c5;
+            color: white;
+        }
+
+        /* Visualizations for the flowers using pure CSS */
+        #cover::before {
+            content: "🌸"; /* Cherry blossom symbol */
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 2rem;
+        }
+
+        #cover::after {
+            content: "💠"; /* Forget-me-not symbol */
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 2rem;
+        }
+
+        h2 { margin-bottom: 20px; }
+        p { font-size: 1.1rem; line-height: 1.6; color: #333; margin-bottom: 20px;}
 
         button {
-            background: #ffb7c5;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
+            background: #ffb7c5; border: none; padding: 10px 20px; border-radius: 20px; color: white; cursor: pointer; font-weight: bold; margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="book">
-        <div class="page active" id="page1">
-            <h2>Our Story</h2>
-            <p>Welcome to our book.</p>
-            <button onclick="nextPage('page2')">Next Page</button>
+    <div id="petal-container"></div>
+
+    <div class="book" onclick="flipPage()">
+        
+        <div class="page" id="cover">
+            <h1>Our Story Book</h1>
+            <p>Click to open...</p>
         </div>
 
-        <div class="page" id="page2">
-            <h2>The Journey</h2>
-            <p>We have come so far together.</p>
-            <button onclick="nextPage('page3')">Next Page</button>
-        </div>
-
-        <div class="page" id="page3">
-            <h2>Thank You</h2>
+        <div class="page" id="page1" style="z-index: 2;">
+            <h2>The Beginning</h2>
+            <p>I still remember the day we first...</p>
+            
             <p>Thank you for everything.</p>
-            <button onclick="window.location.href='index.html'">Back Home</button>
+        </div>
+
+        <div class="page" id="page2" style="z-index: 1;">
+            <h2>The End</h2>
+            <p>This is just the first chapter.</p>
         </div>
     </div>
 
     <script>
-        function nextPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Show the selected page
-            document.getElementById(pageId).classList.add('active');
+        function flipPage() {
+            // Flips the cover
+            document.getElementById('cover').classList.toggle('flipped');
         }
+
+        // --- Falling Petal System ---
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 5 + 's';
+            // Set the petal to be a random floral symbol
+            const flowers = ["🌸", "💠"];
+            petal.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+            document.body.appendChild(petal);
+            // Remove the petal after its animation is complete
+            setTimeout(() => petal.remove(), 8000);
+        }
+        // Run the petal creation loop
+        setInterval(createPetal, 500);
     </script>
 </body>
 </html>
