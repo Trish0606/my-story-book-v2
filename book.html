@@ -1,134 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Story for You</title>
     <style>
-        /* ALL-IN-ONE CSS */
+        /* ALL-IN-ONE CSS (No external files needed) */
+
+        /* Layer 0: Global Aesthetics (Blue Sky Base) */
         body {
+            /* Using a linear gradient to create the blue sky */
             background: linear-gradient(to bottom, #87CEEB, #ffffff);
-            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Georgia', serif; overflow: hidden; perspective: 2000px;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Keeps the falling flowers contained */
+            font-family: 'Georgia', serif;
+            perspective: 1500px; /* Essential for 3D book open animation */
         }
 
-        /* The main book container */
-        .book {
-            width: 350px;
-            height: 450px;
-            position: relative;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            z-index: 10;
+        /* Layer 1: The Scene (Cherry Trees on Sides) */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            /* Pointing to the image in the ROOT folder */
+            background-image: url('cherry-branch.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 1; /* Sits behind the book but in front of the sky */
+            pointer-events: none; /* Let clicks pass through */
         }
+        body::before { left: -50px; } /* Tree on the left */
+        body::after { right: -50px; transform: scaleX(-1); } /* Tree on the right, flipped */
 
-        /* Generic page style */
-        .page {
-            width: 100%;
-            height: 100%;
-            background: white;
-            position: absolute;
+        /* Layer 2: The Falling Flower System */
+        #flower-container {
+            position: fixed;
             top: 0;
             left: 0;
-            padding: 30px;
-            box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 1s;
-            transform-origin: left;
-            backface-visibility: hidden;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Sits behind the book */
+            pointer-events: none;
+        }
+
+        .flower {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: fall linear infinite;
+        }
+
+        /* We will use JavaScript to dynamically assign the actual flower images */
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Layer 3: The Book & Password Gate */
+        .book-container {
+            width: 400px;
+            height: 500px;
+            position: relative;
+            z-index: 10; /* Keep the book above all animation layers */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            /* Pointing to the cover image in the ROOT folder */
+            background-image: url('book-cover.jpg');
+            background-size: cover;
+            background-position: center;
             border-radius: 10px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 1s ease; /* For smooth opening animation */
+        }
+
+        /* Access Form (Will be dynamic later) */
+        .access-gate {
+            position: absolute;
+            width: 80%;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.85); /* Frosty transparency */
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
             text-align: center;
+            z-index: 20;
         }
 
-        /* The logic for flipping the pages */
-        .flipped {
-            transform: rotateY(-180deg);
-        }
-
-        /* Page Back Styling (What you see when it's flipped) */
-        .page-back {
-            background: #fdfdfd;
-            transform: rotateY(180deg);
-            display: none; /* Hidden unless it's flipped */
-        }
+        h1 { color: #fff; text-shadow: 1px 1px 10px rgba(0,0,0,0.3); }
+        h2 { margin-bottom: 20px; font-weight: normal; color: #333; }
         
-        /* The front of the book */
-        #cover {
-            z-index: 3;
-            background: #ffb7c5;
-            color: white;
-        }
-
-        /* Visualizations for the flowers using pure CSS */
-        #cover::before {
-            content: "🌸"; /* Cherry blossom symbol */
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 2rem;
-        }
-
-        #cover::after {
-            content: "💠"; /* Forget-me-not symbol */
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 2rem;
-        }
-
-        h2 { margin-bottom: 20px; }
-        p { font-size: 1.1rem; line-height: 1.6; color: #333; margin-bottom: 20px;}
-
         button {
-            background: #ffb7c5; border: none; padding: 10px 20px; border-radius: 20px; color: white; cursor: pointer; font-weight: bold; margin-top: 15px;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: rgba(255, 183, 197, 0.8); /* Semi-transparent Cherry Pink */
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
         }
+
+        button:hover { background: #ffb7c5; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
-    <div id="petal-container"></div>
+    <div id="flower-container"></div>
 
-    <div class="book" onclick="flipPage()">
-        
-        <div class="page" id="cover">
-            <h1>Our Story Book</h1>
-            <p>Click to open...</p>
-        </div>
-
-        <div class="page" id="page1" style="z-index: 2;">
-            <h2>The Beginning</h2>
-            <p>I still remember the day we first...</p>
+    <div class="book-container">
+        <div class="book-cover" id="myBook">
             
-            <p>Thank you for everything.</p>
-        </div>
-
-        <div class="page" id="page2" style="z-index: 1;">
-            <h2>The End</h2>
-            <p>This is just the first chapter.</p>
+            <div class="access-gate" id="accessForm">
+                <h2>A Story for You</h2>
+                <p>A little something special, just for you.</p>
+                <button onclick="checkPassword()">Unlock Story</button>
+            </div>
+            
         </div>
     </div>
 
     <script>
-        function flipPage() {
-            // Flips the cover
-            document.getElementById('cover').classList.toggle('flipped');
+        // --- Access Logic ---
+        function checkPassword() {
+            // Change '1234' to your secret code
+            const code = prompt("What is our special code?");
+            if (code === "1234") {
+                // If correct, play opening animation and redirect
+                const book = document.getElementById('myBook');
+                book.style.transform = 'rotateY(-180deg) translateZ(100px) scale(0.8)';
+                book.style.opacity = '0'; // Smoothly fade out as it opens
+                
+                setTimeout(() => {
+                    window.location.href = "book.html";
+                }, 1000); // Redirect after animation completes
+            } else {
+                alert("Incorrect, try again!");
+            }
         }
 
-        // --- Falling Petal System ---
-        function createPetal() {
-            const petal = document.createElement('div');
-            petal.className = 'petal';
-            petal.style.left = Math.random() * 100 + 'vw';
-            petal.style.animationDuration = Math.random() * 3 + 5 + 's';
-            // Set the petal to be a random floral symbol
-            const flowers = ["🌸", "💠"];
-            petal.innerText = flowers[Math.floor(Math.random() * flowers.length)];
-            document.body.appendChild(petal);
-            // Remove the petal after its animation is complete
-            setTimeout(() => petal.remove(), 8000);
+        // --- Magical Falling Flowers (JavaScript Only) ---
+        // Instead of emojis, we will programmatically set actual image backgrounds
+
+        // Find standard online PNGs to use for the falling visual
+        const flowerAssets = [
+            "https://upload.wikimedia.org/wikipedia/commons/e/ef/Petal_blossom.png", // Cherry Petal
+            "https://upload.wikimedia.org/wikipedia/commons/e/ed/Forget_Me_Not_Flower.png" // Forget-Me-Not (Simple representation)
+        ];
+
+        function createFlower() {
+            const container = document.getElementById('flower-container');
+            if (!container) return; // Wait until container exists
+
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+
+            // Select a random flower/petal
+            const randomType = Math.floor(Math.random() * flowerAssets.length);
+            flower.style.backgroundImage = `url(${flowerAssets[randomType]})`;
+
+            // Randomize size, speed, and position
+            flower.style.left = Math.random() * 100 + 'vw';
+            const size = Math.random() * 20 + 10; // 10px to 30px
+            flower.style.width = size + 'px';
+            flower.style.height = size + 'px';
+            
+            // Random duration and slight horizontal movement
+            flower.style.animationDuration = Math.random() * 5 + 8 + 's'; // 8s to 13s
+            flower.style.animationDelay = Math.random() * 5 + 's';
+
+            container.appendChild(flower);
+
+            // Clean up old flowers to save memory
+            setTimeout(() => { flower.remove(); }, 15000); // 15 seconds
         }
-        // Run the petal creation loop
-        setInterval(createPetal, 500);
+
+        // Start the loop, creating a flower every 300ms
+        setInterval(createFlower, 300);
+
     </script>
 </body>
 </html>
