@@ -2,200 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Story for You</title>
+    <title>Our Memory Book</title>
     <style>
-        /* ALL-IN-ONE CSS (No external files needed) */
-
-        /* Layer 0: Global Aesthetics (Blue Sky Base) */
         body {
-            /* Using a linear gradient to create the blue sky */
             background: linear-gradient(to bottom, #87CEEB, #ffffff);
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* Keeps the falling flowers contained */
-            font-family: 'Georgia', serif;
-            perspective: 1500px; /* Essential for 3D book open animation */
+            height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Georgia', serif; overflow: hidden;
         }
 
-        /* Layer 1: The Scene (Cherry Trees on Sides) */
         body::before, body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            width: 300px;
-            height: 100vh;
-            /* Pointing to the image in the ROOT folder */
-            background-image: url('cherry-branch.png'); 
-            background-size: contain;
-            background-repeat: no-repeat;
-            z-index: 1; /* Sits behind the book but in front of the sky */
-            pointer-events: none; /* Let clicks pass through */
+            content: ''; position: fixed; top: 0; width: 300px; height: 100vh;
+            background-image: url('http://googleusercontent.com/image_collection/image_retrieval/7672036856911881778_0');
+            background-size: contain; background-repeat: no-repeat; z-index: 1; pointer-events: none;
         }
-        body::before { left: -50px; } /* Tree on the left */
-        body::after { right: -50px; transform: scaleX(-1); } /* Tree on the right, flipped */
+        body::before { left: -50px; }
+        body::after { right: -50px; transform: scaleX(-1); }
 
-        /* Layer 2: The Falling Flower System */
-        #flower-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2; /* Sits behind the book */
-            pointer-events: none;
+        .book { width: 450px; height: 550px; position: relative; z-index: 10; }
+        .page {
+            width: 100%; height: 100%; background: white; position: absolute; top: 0; left: 0; padding: 40px; box-sizing: border-box; border-radius: 5px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            opacity: 0; transform: scale(0.8) translateY(50px) rotateX(10deg); transition: all 0.8s ease;
         }
-
-        .flower {
-            position: absolute;
-            background-size: contain;
-            background-repeat: no-repeat;
-            animation: fall linear infinite;
-        }
-
-        /* We will use JavaScript to dynamically assign the actual flower images */
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        /* Layer 3: The Book & Password Gate */
-        .book-container {
-            width: 400px;
-            height: 500px;
-            position: relative;
-            z-index: 10; /* Keep the book above all animation layers */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .book-cover {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            /* Pointing to the cover image in the ROOT folder */
-            background-image: url('book-cover.jpg');
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 1s ease; /* For smooth opening animation */
-        }
-
-        /* Access Form (Will be dynamic later) */
-        .access-gate {
-            position: absolute;
-            width: 80%;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.85); /* Frosty transparency */
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            z-index: 20;
-        }
-
-        h1 { color: #fff; text-shadow: 1px 1px 10px rgba(0,0,0,0.3); }
-        h2 { margin-bottom: 20px; font-weight: normal; color: #333; }
-        
-        button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: rgba(255, 183, 197, 0.8); /* Semi-transparent Cherry Pink */
-            border: none;
-            cursor: pointer;
-            border-radius: 25px;
-            color: white;
-            font-weight: bold;
-            font-family: 'Georgia', serif;
-            transition: all 0.3s ease;
-        }
-
-        button:hover { background: #ffb7c5; transform: translateY(-2px); }
+        .page.active { display: flex; opacity: 1; transform: scale(1) translateY(0) rotateX(0deg); }
+        h2 { margin-bottom: 20px; font-weight: normal; color: #ffb7c5; }
+        p { font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 20px;}
+        .navigation { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 20px; }
+        button { padding: 10px 25px; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.1); cursor: pointer; border-radius: 20px; color: #ffb7c5; font-weight: bold; font-family: 'Georgia', serif; }
     </style>
 </head>
 <body>
-
-    <div id="flower-container"></div>
-
-    <div class="book-container">
-        <div class="book-cover" id="myBook">
-            
-            <div class="access-gate" id="accessForm">
-                <h2>A Story for You</h2>
-                <p>A little something special, just for you.</p>
-                <button onclick="checkPassword()">Unlock Story</button>
-            </div>
-            
+    <div class="book">
+        <div class="page active" id="page1">
+            <h2>Our Story</h2>
+            <p>Welcome to a little something special, made just for you.</p>
+        </div>
+        <div class="page" id="page2">
+            <h2>The Beginning</h2>
+            <p>I remember the first time I saw your face.</p>
+        </div>
+        <div class="page" id="page3">
+            <h2>The End</h2>
+            <p>Thank you for being my special person.</p>
+            <button onclick="window.location.href='index.html'">Back Home</button>
         </div>
     </div>
 
+    <div class="navigation">
+        <button id="prevBtn" onclick="changePage(-1)" disabled>Previous Page</button>
+        <button id="nextBtn" onclick="changePage(1)">Next Page</button>
+    </div>
+
     <script>
-        // --- Access Logic ---
-        function checkPassword() {
-            // Change '1234' to your secret code
-            const code = prompt("What is our special code?");
-            if (code === "1234") {
-                // If correct, play opening animation and redirect
-                const book = document.getElementById('myBook');
-                book.style.transform = 'rotateY(-180deg) translateZ(100px) scale(0.8)';
-                book.style.opacity = '0'; // Smoothly fade out as it opens
-                
-                setTimeout(() => {
-                    window.location.href = "book.html";
-                }, 1000); // Redirect after animation completes
-            } else {
-                alert("Incorrect, try again!");
-            }
+        let currentPage = 1;
+        const totalPages = document.querySelectorAll('.page').length;
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function changePage(direction) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            currentPage += direction;
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            prevBtn.disabled = (currentPage === 1);
+            nextBtn.disabled = (currentPage === totalPages);
         }
-
-        // --- Magical Falling Flowers (JavaScript Only) ---
-        // Instead of emojis, we will programmatically set actual image backgrounds
-
-        // Find standard online PNGs to use for the falling visual
-        const flowerAssets = [
-            "https://upload.wikimedia.org/wikipedia/commons/e/ef/Petal_blossom.png", // Cherry Petal
-            "https://upload.wikimedia.org/wikipedia/commons/e/ed/Forget_Me_Not_Flower.png" // Forget-Me-Not (Simple representation)
-        ];
-
-        function createFlower() {
-            const container = document.getElementById('flower-container');
-            if (!container) return; // Wait until container exists
-
-            const flower = document.createElement('div');
-            flower.className = 'flower';
-
-            // Select a random flower/petal
-            const randomType = Math.floor(Math.random() * flowerAssets.length);
-            flower.style.backgroundImage = `url(${flowerAssets[randomType]})`;
-
-            // Randomize size, speed, and position
-            flower.style.left = Math.random() * 100 + 'vw';
-            const size = Math.random() * 20 + 10; // 10px to 30px
-            flower.style.width = size + 'px';
-            flower.style.height = size + 'px';
-            
-            // Random duration and slight horizontal movement
-            flower.style.animationDuration = Math.random() * 5 + 8 + 's'; // 8s to 13s
-            flower.style.animationDelay = Math.random() * 5 + 's';
-
-            container.appendChild(flower);
-
-            // Clean up old flowers to save memory
-            setTimeout(() => { flower.remove(); }, 15000); // 15 seconds
-        }
-
-        // Start the loop, creating a flower every 300ms
-        setInterval(createFlower, 300);
-
     </script>
 </body>
 </html>
